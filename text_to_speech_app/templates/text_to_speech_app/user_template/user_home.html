@@ -1,0 +1,33 @@
+{% extends 'text_to_speech_app/user_template/base_template.html' %}
+{% block page_title %}
+Home
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+        <h2>Upload PDF</h2>
+  <form method="POST" action="{% url 'extract_text' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Upload</button>
+  </form>
+
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  extracted_text = document.querySelector("#extracted_text")
+  extracted_text.textContent = "None"
+</script>
+{% endblock custom_js %}
+
+
+<!-- templates/converter/upload.html -->
+
+  
