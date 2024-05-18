@@ -10,11 +10,11 @@ Home
           {{ message }}
         {% endfor %}
         <h2>Upload PDF</h2>
-  <form method="POST" action="{% url 'extract_text' %}" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Upload</button>
-  </form>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Upload</button>
+        </form>
 
       </div>
     </section>

@@ -25,8 +25,11 @@ class PDF(models.Model):
     file = models.FileField(upload_to='pdfs/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return str(self.file)
+    
+
 class Audio(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="audio")
     pdf = models.ForeignKey(PDF, on_delete=models.CASCADE)
     file = models.FileField(upload_to='audios/')
     created_at = models.DateTimeField(auto_now_add=True)

@@ -73,4 +73,11 @@ def edit_user_save(request):
             messages.error(request, "Failed to update User")
             return redirect("edit_user", user_id)
     else:
-        return HttpResponse("Method not Allowed")    
+        return HttpResponse("Method not Allowed") 
+
+def audios(request):
+    audios = Audio.objects.all()
+    return render(request, "text_to_speech_app/admin_templates/audios_template.html", {
+        "audios": audios,
+    })
+       
