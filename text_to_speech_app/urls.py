@@ -13,12 +13,12 @@ urlpatterns = [
     path('manage_users/', AdminViews.manage_users, name='manage_users'),
     path('edit_user/<str:id>', AdminViews.edit_user, name='edit_user'),
     path('edit_user_save/', AdminViews.edit_user_save, name='edit_user_save'),
-    path('audios/', AdminViews.audios, name='audios'),
 
 
     # User Views
     path('user_home/', UserViews.user_home, name='user_home'),
-    path('upload_pdf/', UserViews.upload_pdf, name='extract_text'),
+    path('upload_pdf/', UserViews.upload_pdf, name='upload_pdf'),
+    path('converted_audios/', UserViews.converted_audios, name='converted_audios'),
 
     
 

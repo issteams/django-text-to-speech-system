@@ -10,22 +10,16 @@ Home
           {{ message }}
         {% endfor %}
         <h2>Upload PDF</h2>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="post" action="{% url 'upload_pdf' %}" enctype="multipart/form-data">
           {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit">Upload</button>
+          {{ form }}
+          <button type="submit">Convert</button>
         </form>
 
       </div>
     </section>
     <!-- /.content -->
 {% endblock main_content %}
-{% block custom_js %}
-<script>
-  extracted_text = document.querySelector("#extracted_text")
-  extracted_text.textContent = "None"
-</script>
-{% endblock custom_js %}
 
 
 <!-- templates/converter/upload.html -->

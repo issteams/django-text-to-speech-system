@@ -68,6 +68,12 @@ def pdf_to_audio(pdf_path, output_audio_path):
     text = extract_text_from_pdf(pdf_path)  # Extract text from the PDF
     text_to_audio_chunks(text, output_audio_path)  # Convert text to audio in chunks
 
+def convert_text_to_audio(text, pdf_id, pdf_file=None):
+    tts = gTTS(text)
+    audio_path = f'audios/audio_{pdf_id}.mp3'
+    tts.save(audio_path)
+    return audio_path
+
 #Example usage
 # pdf_path = "test.pdf"
 # output_audio_path = "output_audio.mp3"
