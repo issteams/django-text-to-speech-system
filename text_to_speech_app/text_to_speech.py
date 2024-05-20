@@ -2,6 +2,7 @@ import PyPDF2  # Import the PyPDF2 library to handle PDF files
 from gtts import gTTS  # Import the gTTS library for text-to-speech conversion
 from pydub import AudioSegment  # Import the pydub library for audio manipulation
 import os  # Import os library for file operations
+from django.conf import settings
 
 def extract_text_from_pdf(pdf_path):
     """
@@ -68,11 +69,13 @@ def pdf_to_audio(pdf_path, output_audio_path):
     text = extract_text_from_pdf(pdf_path)  # Extract text from the PDF
     text_to_audio_chunks(text, output_audio_path)  # Convert text to audio in chunks
 
-def convert_text_to_audio(text, pdf_id, pdf_file=None):
+def convert_text_to_audio(text, pdf_id):
+    audio_filename = f'audio_{pdf_id}.mp3'
+    audio_path = os.path.join(settings.MEDIA_ROOT, 'audios', audio_filename)
+    os.makedirs(os.path.dirname(audio_path), exist_ok=True)  # Ensure the directory exists
     tts = gTTS(text)
-    audio_path = f'audios/audio_{pdf_id}.mp3'
     tts.save(audio_path)
-    return audio_path
+    return f'audios/{audio_filename}'  # Return the relative path
 
 #Example usage
 # pdf_path = "test.pdf"

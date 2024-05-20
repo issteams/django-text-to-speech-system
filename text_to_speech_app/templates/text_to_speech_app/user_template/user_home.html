@@ -1,27 +1,116 @@
 {% extends 'text_to_speech_app/user_template/base_template.html' %}
 {% block page_title %}
-Home
+Convert PDF
 {% endblock page_title %}
+{% block custom_css %}
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .form-control {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .pdf_label {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .alert {
+    margin-top: 20px;
+  }
+  .submit-btn {
+    width: 100%;
+  }
+  .loading {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .result-message {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+  }
+</style>
+{% endblock custom_css %}
 {% block main_content %}
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        {% for message in messages %}
-          {{ message }}
-        {% endfor %}
-        <h2>Upload PDF</h2>
-        <form method="post" action="{% url 'upload_pdf' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form }}
-          <button type="submit">Convert</button>
-        </form>
-
+        {% if messages %}
+          {% for message in messages %}
+            {% if message.tags == 'error' %}
+              <div class="alert alert-danger">{{ message }}</div>
+            {% endif %}
+            {% if message.tags == 'success' %}
+              <div class="alert alert-success">{{ message }}</div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        <div class="form-container">
+          <form id="upload-form" method="post" action="{% url 'upload_pdf' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="id_pdf" class="pdf_label">Upload PDF</label>
+            {{ form }}
+            <button type="submit" class="btn btn-primary submit-btn">Convert</button>
+          </form>
+          <div class="loading" id="loading">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Converting...</span>
+            </div>
+            <p>Converting your PDF, please wait...</p>
+          </div>
+          <div class="result-message alert alert-success" id="result-message">
+            <p id="result-text"></p>
+            <a id="audio-play" href="" target="_blank">Play</a> | 
+            <a id="audio-download" href="" download>Download</a>
+          </div>
+        </div>
       </div>
     </section>
     <!-- /.content -->
 {% endblock main_content %}
-
-
-<!-- templates/converter/upload.html -->
-
-  
+{% block custom_js %}
+<script>
+  document.getElementById('upload-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    var form = event.target;
+    var formData = new FormData(form);
+    
+    document.querySelector('.submit-btn').disabled = true;
+    document.getElementById('loading').style.display = 'block';
+    
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    }).then(response => response.json()).then(data => {
+      document.querySelector('.submit-btn').disabled = false;
+      document.getElementById('loading').style.display = 'none';
+      
+      if (data.error) {
+        alert(data.error);
+      } else {
+        document.getElementById('result-message').style.display = 'block';
+        document.getElementById('result-text').innerText = data.message;
+        document.getElementById('audio-play').href = data.audio_url;
+        document.getElementById('audio-download').href = data.audio_url;
+        document.getElementById('audio-download').download = data.audio_name;
+      }
+    }).catch(error => {
+      console.error('Error:', error);
+      document.querySelector('.submit-btn').disabled = false;
+      document.getElementById('loading').style.display = 'none';
+      alert('An error occurred. Please try again.');
+    });
+  });
+</script>
+{% endblock custom_js %}

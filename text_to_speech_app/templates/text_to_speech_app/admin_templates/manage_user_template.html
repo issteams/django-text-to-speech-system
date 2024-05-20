@@ -41,6 +41,16 @@ Manage Users
                     </tr>
                   </thead>
                   <tbody>
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                          <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                          <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                    {% endif %}
                   {% for user in users %}
                     <tr>
                       <td>{{ user.admin.id }}</td>
@@ -52,6 +62,7 @@ Manage Users
                       <td>{{ user.admin.last_login }}</td>
                       <td>{{ user.admin.date_joined }}</td>
                       <td><a href="{% url 'edit_user' user.admin.id %}" class="btn btn-success">Edit</a></td>
+                      <td><a href="{% url 'delete_user' user.admin.id %}" class="btn btn-danger">Delete</a></td>
                     </tr>
                   {% endfor %}
                   </tbody>

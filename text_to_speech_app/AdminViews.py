@@ -22,15 +22,13 @@ def add_user_save(request):
 
         try:
             user = CustomUser.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password, user_type=2)
-            # user.other.address = address
+            other_model = Other.objects.create(admin=user, address=address)
             user.save()
             messages.success(request, "User Created Successfully")
             return redirect("add_user")
         except:
             messages.error(request, "Failed to create User")
             return redirect("add_user")
-
-    
     else:
         return redirect('add_user')
 
@@ -74,3 +72,13 @@ def edit_user_save(request):
             return redirect("edit_user", user_id)
     else:
         return HttpResponse("Method not Allowed") 
+
+def delete_user(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        user.delete()
+        messages.success(request, f"{user.username} Deleted Successfully")
+        return redirect("manage_users")
+    except:
+        messages.error(request, f"Failed to delete {user.usrename}")
+

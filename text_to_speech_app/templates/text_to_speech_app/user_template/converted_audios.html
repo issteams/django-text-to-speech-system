@@ -1,7 +1,18 @@
 {% extends 'text_to_speech_app/user_template/base_template.html' %}
-{% block page_title %}
-Converted Audios
-{% endblock page_title %}
+{% load custom_filters %}
+{% block custom_css %}
+<style>
+  .playing .fa-play {
+    display: none;
+}
+.playing .fa-pause {
+    display: inline;
+}
+.fa-pause {
+    display: none;
+}
+</style>
+{% endblock custom_css %}
 {% block main_content %}
     <!-- Main content -->
     <section class="content">
@@ -10,9 +21,9 @@ Converted Audios
 
            <div class="row">
           <div class="col-12">
-            <div class="card">
+            <div class="">
               <div class="card-header">
-                <h3 class="card-title">Audio Details</h3>
+                <h3 class="card-title">Recently Converted</h3>
 
                 <div class="card-tools">
                   <div class="input-group input-group-sm" style="width: 150px;">
@@ -23,30 +34,43 @@ Converted Audios
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> 
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                  <thead>
-                    <tr>
-                      {% comment %} <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>User Name</th>
-                      <th>Email</th>
-                      <th>Address</th>
-                      <th>Last Login</th>
-                      <th>Date Joined</th>
-                      <th>Action</th> {% endcomment %}
-                    </tr>
-                  </thead>
+                <table class="table text-nowrap">
                   <tbody>
-                  {% for audio in audios %}
-                        <tr>
-                            
-                                <td><a href="">{{ audio.file }}</a></td>
-                            
-                        </tr>
-                  {% endfor %}
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                          <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% for audio in audios %}
+            <tr>
+                <td>{{ audio.file|basename }}</td>
+                <td>
+                    <a href="#" id="playButton-{{ forloop.counter }}" class="play-button" data-audio-id="audio-{{ forloop.counter }}">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                        <i class="fa fa-pause" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <audio id="audio-{{ forloop.counter }}" src="{{ audio.file.url }}"></audio>
+                <td>
+                    <a href="{{ audio.file.url }}" download="{{ audio.file|basename }}">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'delete_audio' audio.id %}">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
                   </tbody>
                 </table>
               </div>
@@ -59,4 +83,39 @@ Converted Audios
     </section>
     <!-- /.content -->
 {% endblock main_content %}
+{% block custom_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+      const playButtons = document.querySelectorAll('.play-button');
+      playButtons.forEach(button => {
+          button.addEventListener('click', (event) => {
+              event.preventDefault();
+              const audioId = button.getAttribute('data-audio-id');
+              const audio = document.getElementById(audioId);
+
+              if (audio) {
+                  if (audio.paused) {
+                      // Pause any currently playing audio
+                      document.querySelectorAll('audio').forEach(aud => {
+                          aud.pause();
+                          const audButton = document.querySelector(`.play-button[data-audio-id="${aud.id}"]`);
+                          if (audButton) {
+                              audButton.classList.remove('playing');
+                          }
+                      });
+                      // Play the selected audio
+                      audio.play();
+                      button.classList.add('playing');
+                  } else {
+                      audio.pause();
+                      button.classList.remove('playing');
+                  }
+              } else {
+                  console.error(`Audio element with ID ${audioId} not found`);
+              }
+          });
+      });
+  });
+</script>
+{% endblock custom_js%}
 

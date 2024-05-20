@@ -2,6 +2,11 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 
+def pdf_upload_to(instance, filename):
+    return f'pdfs/{filename}'
+
+def audio_upload_to(instance, filename):
+    return f'audios/{filename}'
 # Create your models here.
 
 class CustomUser(AbstractUser):
@@ -22,7 +27,7 @@ class Other(models.Model):
 
 class PDF(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="pdf")
-    file = models.FileField(upload_to='pdfs/')
+    file = models.FileField(upload_to=pdf_upload_to)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -32,9 +37,10 @@ class PDF(models.Model):
 class Audio(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="audio")
     pdf = models.ForeignKey(PDF, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='audios/')
+    file = models.FileField(upload_to=audio_upload_to)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(s)
+
     

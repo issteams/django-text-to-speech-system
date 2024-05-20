@@ -1,7 +1,7 @@
 {% load static %}
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{% url 'user_home' %}" class="brand-link">
       <img src="{% static "dist/img/AdminLTELogo.png" %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">Text To Speech</span>
@@ -25,33 +25,36 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            {% url 'user_home' as user_home %}
+            <a href="{{ user_home }}" class="nav-link {% if request.path == user_home %} active {% endif %}">
+              </i><i class="fa fa-home" aria-hidden="true"></i>
               <p>
                 Home
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'converted_audios' %}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            {% url 'uploaded_pdfs' as uploaded_pdfs %}
+            <a href="{{ uploaded_pdfs }}" class="nav-link {% if request.path == uploaded_pdfs %} active {% endif %}">
+              <i class="fa fa-file" aria-hidden="true"></i>
               <p>
-               Converted Audios
+                Uploaded PDFs
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'manage_users' %}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            {% url 'converted_audios' as converted_audios %}
+            <a href="{{ converted_audios }}" class="nav-link {% if request.path == converted_audios %} active {% endif %}">
+              <i class="fas fa-audio-description"></i>
               <p>
-                Mange Users
+                Converted Audios
               </p>
             </a>
             <li class="nav-item">
               <a href="" class="nav-link">
-                <i class="nav-icon fas fa-th"></i>
+                <i class="fa fa-address-book" aria-hidden="true"></i>
                 <p>
-                  Audios
+                  About
                 </p>
               </a>
             </li>

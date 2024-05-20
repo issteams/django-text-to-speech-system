@@ -25,7 +25,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="{% url 'admin_home' %}" class="nav-link">
+            {% url 'admin_home' as admin_home %}
+            <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% active %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Home
@@ -33,7 +34,8 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'add_user' %}" class="nav-link">
+            {% url 'add_user' as add_user %}
+            <a href="{{ add_user }}" class="nav-link {% if request.path == add_user %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                Add User
@@ -41,7 +43,8 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'manage_users' %}" class="nav-link">
+            {% url 'manage_users' as manage_users %}
+            <a href="{{ manage_users }}" class="nav-link {% if request.path == manage_users %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Mange Users
