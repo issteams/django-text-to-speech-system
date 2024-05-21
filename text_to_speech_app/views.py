@@ -34,15 +34,16 @@ def doUserSignup(request):
         email = request.POST.get('email')
         address = request.POST.get('address')
         password = request.POST.get('password')
-        try:
-            user = CustomUser.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
-            other_model = Other.objects.create(admin=user, address=address)
-            user.save()
-            messages.success(request, f"Welcome {request.username}")
-            return redirect("user_home")
-        except:
-            messages.error(request, "Failed to Sign Up")
-            return redirect("user_home")
+        # try:
+        user = CustomUser.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password, user_type=2)
+        other_model = Other.objects.create(admin=user, address=address)
+        user.save()
+        login(request, user)
+        messages.success(request, f"Welcome {user.username}")
+        return redirect("user_home")
+        # except:
+        #     messages.error(request, "Failed to Sign Up")
+        #     return redirect("index")
     else:
         return HttpResponse("<h1>Method not Allowed</h1>")
 

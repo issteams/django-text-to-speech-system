@@ -29,6 +29,7 @@ class PDF(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="pdf")
     file = models.FileField(upload_to=pdf_upload_to)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.file)
@@ -36,7 +37,7 @@ class PDF(models.Model):
 
 class Audio(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="audio")
-    pdf = models.ForeignKey(PDF, on_delete=models.CASCADE)
+    pdf = models.ForeignKey(PDF, on_delete=models.SET_NULL, blank=True, null=True,)
     file = models.FileField(upload_to=audio_upload_to)
     created_at = models.DateTimeField(auto_now_add=True)
 

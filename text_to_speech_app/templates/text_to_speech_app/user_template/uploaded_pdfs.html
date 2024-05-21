@@ -1,58 +1,97 @@
 {% extends 'text_to_speech_app/user_template/base_template.html' %}
 {% load custom_filters %}
 {% block main_content %}
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-
-
-           <div class="row">
-          <div class="col-12">
-            <div class="">
-              <div class="card-header">
-                <h3 class="card-title">Recently Uploaded</h3>
-
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                    <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                    </div>
-                  </div>
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="">
+          <div class="card-header">
+            <h3 class="card-title">Recently Uploaded</h3>
+            <div class="card-tools">
+              <div class="input-group input-group-sm" style="width: 150px;">
+                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                 </div>
-              </div> 
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table text-nowrap">
-                  <tbody>
-                    {% if messages %}
-                      {% for message in messages %}
-                        {% if message.tags == 'error' %}
-                          <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% if message.tags == 'success' %}
-                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                  {% for pdf in pdfs %}
-                        <tr>
-                            <td>{{ pdf.file|basename }}</td>
-                            <td><a href="{% url 'reconvert_pdf' pdf.id %}"><i class="fas fa-redo"></i></a></td>
-                            <td><a href="{% url 'delete_pdf' pdf.id %}"><i class="fas fa-trash-alt"></i></a></td>
-                        </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
               </div>
-              <!-- /.card-body -->
             </div>
-            <!-- /.card -->
+          </div> 
+          <!-- /.card-header -->
+          <div class="card-body table-responsive p-0">
+            <table class="table text-nowrap">
+              <tbody>
+                {% if messages %}
+                  {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                      <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                      <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% for pdf in pdfs %}
+                  <tr>
+                    <td>{{ pdf.file|basename }}</td>
+                    <td>
+                      <a href="#" class="reconvert-link" data-url="{% url 'reconvert_pdf' pdf.id %}">
+                        <i class="fas fa-redo"></i>
+                      </a>
+                      <i class="fas fa-spinner fa-spin d-none"></i>
+                    </td>
+                    <td><a href="{% url 'delete_pdf' pdf.id %}"><i class="fas fa-trash-alt"></i></a></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
+          <!-- /.card-body -->
         </div>
+        <!-- /.card -->
       </div>
-    </section>
-    <!-- /.content -->
-{% endblock main_content %}
+    </div>
+  </div>
+</section>
+<!-- /.content -->
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const reconvertLinks = document.querySelectorAll('.reconvert-link');
+    reconvertLinks.forEach(link => {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        const spinner = link.nextElementSibling;
+        link.classList.add('d-none');
+        spinner.classList.remove('d-none');
+
+        fetch(link.dataset.url, {
+          method: 'GET',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            spinner.classList.add('d-none');
+            link.classList.remove('d-none');
+            alert('PDF reconverted successfully!');
+            // You can add more actions here, e.g., updating the link to the new audio file
+          } else {
+            spinner.classList.add('d-none');
+            link.classList.remove('d-none');
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          spinner.classList.add('d-none');
+          link.classList.remove('d-none');
+          alert('Error: ' + error.message);
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

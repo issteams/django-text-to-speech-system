@@ -26,7 +26,7 @@
                with font-awesome or any other icon font library -->
           <li class="nav-item">
             {% url 'admin_home' as admin_home %}
-            <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% active %}">
+            <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Home
