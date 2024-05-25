@@ -4,84 +4,80 @@
 <style>
   .playing .fa-play {
     display: none;
-}
-.playing .fa-pause {
+  }
+  .playing .fa-pause {
     display: inline;
-}
-.fa-pause {
+  }
+  .fa-pause {
     display: none;
-}
+  }
 </style>
 {% endblock custom_css %}
 {% block main_content %}
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-
-
-           <div class="row">
-          <div class="col-12">
-            <div class="">
-              <div class="card-header">
-                <h3 class="card-title">Recently Converted</h3>
-
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                    <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                    </div>
-                  </div>
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="">
+          <div class="card-header">
+            <h3 class="card-title">Recently Converted</h3>
+            <div class="card-tools">
+              <div class="input-group input-group-sm" style="width: 150px;">
+                <input type="text" id="table_search" name="table_search" class="form-control float-right" placeholder="Search">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                 </div>
-              </div> 
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table text-nowrap">
-                  <tbody>
-                    {% if messages %}
-                      {% for message in messages %}
-                        {% if message.tags == 'error' %}
-                          <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% if message.tags == 'success' %}
-                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% endfor %}
+              </div>
+            </div>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body table-responsive p-0">
+            <table class="table text-nowrap">
+              <tbody id="audio-table-body">
+                {% if messages %}
+                  {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                      <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
                     {% endif %}
-                    {% for audio in audios %}
-            <tr>
-                <td>{{ audio.file|basename }}</td>
-                <td>
-                    <a href="#" id="playButton-{{ forloop.counter }}" class="play-button" data-audio-id="audio-{{ forloop.counter }}">
+                    {% if message.tags == 'success' %}
+                      <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% for audio in audios %}
+                  <tr>
+                    <td>{{ audio.file|basename }}</td>
+                    <td>
+                      <a href="#" id="playButton-{{ forloop.counter }}" class="play-button" data-audio-id="audio-{{ forloop.counter }}">
                         <i class="fa fa-play" aria-hidden="true"></i>
                         <i class="fa fa-pause" aria-hidden="true"></i>
-                    </a>
-                </td>
-                <audio id="audio-{{ forloop.counter }}" src="{{ audio.file.url }}"></audio>
-                <td>
-                    <a href="{{ audio.file.url }}" download="{{ audio.file|basename }}">
+                      </a>
+                    </td>
+                    <audio id="audio-{{ forloop.counter }}" src="{{ audio.file.url }}"></audio>
+                    <td>
+                      <a href="{{ audio.file.url }}" download="{{ audio.file|basename }}">
                         <i class="fa fa-download"></i>
-                    </a>
-                </td>
-                <td>
-                    <a href="{% url 'delete_audio' audio.id %}">
+                      </a>
+                    </td>
+                    <td>
+                      <a href="{% url 'delete_audio' audio.id %}">
                         <i class="fas fa-trash-alt"></i>
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
+          <!-- /.card-body -->
         </div>
+        <!-- /.card -->
       </div>
-    </section>
-    <!-- /.content -->
+    </div>
+  </div>
+</section>
+<!-- /.content -->
 {% endblock main_content %}
 {% block custom_js %}
 <script>
@@ -115,7 +111,97 @@
               }
           });
       });
+
+      const searchInput = document.getElementById('table_search');
+
+      searchInput.addEventListener('input', function() {
+          const query = this.value;
+
+          fetch(`{% url 'search_audios' %}?q=${query}`, {
+              method: 'GET',
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              const audioTableBody = document.getElementById('audio-table-body');
+              audioTableBody.innerHTML = '';
+
+              data.audios.forEach(audio => {
+                  const row = document.createElement('tr');
+
+                  const fileNameCell = document.createElement('td');
+                  fileNameCell.textContent = audio.basename;
+
+                  const playButtonCell = document.createElement('td');
+                  const playButton = document.createElement('a');
+                  playButton.href = '#';
+                  playButton.id = `playButton-${audio.id}`;
+                  playButton.classList.add('play-button');
+                  playButton.dataset.audioId = `audio-${audio.id}`;
+                  playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i><i class="fa fa-pause" aria-hidden="true"></i>';
+                  playButtonCell.appendChild(playButton);
+
+                  const audioElement = document.createElement('audio');
+                  audioElement.id = `audio-${audio.id}`;
+                  audioElement.src = audio.file;
+
+                  const downloadCell = document.createElement('td');
+                  const downloadLink = document.createElement('a');
+                  downloadLink.href = audio.file;
+                  downloadLink.download = audio.basename;
+                  downloadLink.innerHTML = '<i class="fa fa-download"></i>';
+                  downloadCell.appendChild(downloadLink);
+
+                  const deleteCell = document.createElement('td');
+                  const deleteLink = document.createElement('a');
+                  deleteLink.href = `{% url 'delete_audio' 0 %}`.replace('0', audio.id);
+                  deleteLink.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                  deleteCell.appendChild(deleteLink);
+
+                  row.appendChild(fileNameCell);
+                  row.appendChild(playButtonCell);
+                  row.appendChild(audioElement);
+                  row.appendChild(downloadCell);
+                  row.appendChild(deleteCell);
+
+                  audioTableBody.appendChild(row);
+              });
+
+              document.querySelectorAll('.play-button').forEach(button => {
+                  button.addEventListener('click', (event) => {
+                      event.preventDefault();
+                      const audioId = button.getAttribute('data-audio-id');
+                      const audio = document.getElementById(audioId);
+
+                      if (audio) {
+                          if (audio.paused) {
+                              // Pause any currently playing audio
+                              document.querySelectorAll('audio').forEach(aud => {
+                                  aud.pause();
+                                  const audButton = document.querySelector(`.play-button[data-audio-id="${aud.id}"]`);
+                                  if (audButton) {
+                                      audButton.classList.remove('playing');
+                                  }
+                              });
+                              // Play the selected audio
+                              audio.play();
+                              button.classList.add('playing');
+                          } else {
+                              audio.pause();
+                              button.classList.remove('playing');
+                          }
+                      } else {
+                          console.error(`Audio element with ID ${audioId} not found`);
+                      }
+                  });
+              });
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+      });
   });
 </script>
-{% endblock custom_js%}
-
+{% endblock custom_js %}

@@ -11,12 +11,11 @@ Home
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3></h3>
-
+                <h3>{{ total_users }}</h3>
                 <p>Total Users</p>
               </div>
               <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="ion ion-person"></i>
               </div>
               <a href="{% url 'manage_users' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -26,14 +25,13 @@ Home
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3></h3>
-
+                <h3>{{ total_active_users }}</h3>
                 <p>Total Active Users</p>
               </div>
               <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="ion ion-person-stalker"></i>
               </div>
-              <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'active_users' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -41,14 +39,13 @@ Home
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3></h3>
-
+                <h3>{{ total_uploaded_pdfs }}</h3>
                 <p>Total Uploaded PDFs</p>
               </div>
               <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="ion ion-document-text"></i>
               </div>
-              <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'total_uploaded_pdfs' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -56,341 +53,145 @@ Home
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3></h3>
-
+                <h3>{{ total_converted }}</h3>
                 <p>Total Converted</p>
               </div>
               <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="ion ion-mic"></i>
               </div>
-              <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'total_converted_audios' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
         </div>
-          <div class="row">
-              <div class="col-lg-6">
+        <!-- Charts Row -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Users and Active Users Chart</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="usersChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Uploaded PDFs</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pdfsChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Conversions</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="conversionsChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
                 <div class="card card-danger">
-                  <div class="card-header">
-                    <h3 class="card-title">Users and Active Users Chart</h3>
-
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                    <div class="card-header">
+                        <h3 class="card-title">User Feedback</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
+                    <div class="card-body">
+                        <canvas id="feedbackChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                   <div class="card card-success">
-                  <div class="card-header">
-                    <h3 class="card-title">Total Subject in Each Courses</h3>
-
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-lg-6">
-                 <div class="card card-info">
-                  <div class="card-header">
-                    <h3 class="card-title">Total Student in Each Course</h3>
-
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="pieChart3" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-              <div class="col-lg-6">
-                 <div class="card card-warning">
-                  <div class="card-header">
-                    <h3 class="card-title">Total Student in Each Subject</h3>
-
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="pieChart4" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-lg-12">
-                  <div class="card card-success">
-                  <div class="card-header">
-                    <h3 class="card-title">Staff Leaves vs Attendance</h3>
-
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="chart">
-                      <canvas id="barChart1" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-lg-12">
-                  <div class="card card-success">
-                  <div class="card-header">
-                    <h3 class="card-title">Student Leaves vs Attendance</h3>
-
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="chart">
-                      <canvas id="barChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-          </div>
+            </div>
+        </div>
       </div>
     </section>
     <!-- /.content -->
 {% endblock main_content %}
+
 {% block custom_js %}
 <script>
     $(document).ready(function(){
+        // Users and Active Users Chart
+        var usersChartData = {
+            labels: ['Total Users', 'Active Users'],
+            datasets: [{
+                data: [{{ total_users }}, {{ total_active_users }}],
+                backgroundColor: ['#00a65a', '#f39c12'],
+            }]
+        };
+        var usersChartCanvas = $('#usersChart').get(0).getContext('2d');
+        new Chart(usersChartCanvas, {
+            type: 'pie',
+            data: usersChartData,
+            options: { responsive: true, maintainAspectRatio: false }
+        });
 
-            var pieData        = {
-                  labels: [
-                      'Students',
-                      'Staffs'
-                  ],
-                  datasets: [
-                    {
-                      data: [{{ student_count }},{{ staff_count }}],
-                      backgroundColor : ['#f56954', '#00a65a'],
-                    }
-                  ]
-             };
+        // Total Uploaded PDFs Chart
+        var pdfsChartData = {
+            labels: ['Uploaded PDFs'],
+            datasets: [{
+                data: [{{ total_uploaded_pdfs }}],
+                backgroundColor: ['#f39c12'],
+            }]
+        };
+        var pdfsChartCanvas = $('#pdfsChart').get(0).getContext('2d');
+        new Chart(pdfsChartCanvas, {
+            type: 'bar',
+            data: pdfsChartData,
+            options: { responsive: true, maintainAspectRatio: false }
+        });
 
-            var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-            var pieOptions     = {
-              maintainAspectRatio : false,
-              responsive : true,
-            }
-            //Create pie or douhnut chart
-            // You can switch between pie and douhnut using the method below.
-            var pieChart = new Chart(pieChartCanvas, {
-              type: 'pie',
-              data: pieData,
-              options: pieOptions
-            });
+        // Total Conversions Chart
+        var conversionsChartData = {
+            labels: ['Converted PDFs'],
+            datasets: [{
+                data: [{{ total_converted }}],
+                backgroundColor: ['#f56954'],
+            }]
+        };
+        var conversionsChartCanvas = $('#conversionsChart').get(0).getContext('2d');
+        new Chart(conversionsChartCanvas, {
+            type: 'bar',
+            data: conversionsChartData,
+            options: { responsive: true, maintainAspectRatio: false }
+        });
 
-            //Second Chart for Total Subject in Each Course
-                var subject_count_list={{ subject_count_list }};
-                var course_name_list={{ course_name_list|safe }};
-                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-                var donutData        = {
-                  labels:course_name_list,
-                  datasets: [
-                    {
-                      data: subject_count_list,
-                      backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-                    }
-                  ]
-                }
-                var donutOptions     = {
-                  maintainAspectRatio : false,
-                  responsive : true,
-                }
-                //Create pie or douhnut chart
-                // You can switch between pie and douhnut using the method below.
-                var donutChart = new Chart(donutChartCanvas, {
-                  type: 'doughnut',
-                  data: donutData,
-                  options: donutOptions
-                });
-
-
-                //show total student in each course
-                var student_count_list_in_course={{ student_count_list_in_course }};
-
-                  var pieData2        = {
-                          labels:course_name_list,
-                          datasets: [
-                            {
-                              data: student_count_list_in_course,
-                              backgroundColor : ['#f56954', '#00a65a','#aa00ff', '#ff3d00'],
-                            }
-                          ]
-                     };
-
-                    var pieChartCanvas2 = $('#pieChart3').get(0).getContext('2d')
-                    var pieOptions2     = {
-                      maintainAspectRatio : false,
-                      responsive : true,
-                    }
-                    var pieChart = new Chart(pieChartCanvas2, {
-                      type: 'pie',
-                      data: pieData2,
-                      options: pieOptions2
-                    });
-
-                //show total student in each Subject
-                var student_count_list_in_subject={{ student_count_list_in_subject }};
-                var subject_list={{ subject_list|safe }};
-
-                  var pieData3  = {
-                          labels:subject_list,
-                          datasets: [
-                            {
-                              data: student_count_list_in_subject,
-                              backgroundColor : ['#f56954', '#00a65a','#aa00ff', '#ff3d00','#bf360c','#ffff00','#00e676','#40c4ff','#f56954', '#00a65a','#aa00ff', '#ff3d00','#bf360c','#ffff00','#00e676','#40c4ff'],
-                            }
-                          ]
-                     };
-
-                    var pieChartCanvas3 = $('#pieChart4').get(0).getContext('2d')
-                    var pieOption3     = {
-                      maintainAspectRatio : false,
-                      responsive : true,
-                    }
-                    var pieChart = new Chart(pieChartCanvas3, {
-                      type: 'pie',
-                      data: pieData3,
-                      options: pieOption3
-                    });
-
-                        ///Staff Leave vs Attendance Bar Chart
-                        var attendance_present_list_staff={{ attendance_present_list_staff }};
-                        var attendance_absent_list_staff={{ attendance_absent_list_staff }};
-                        var staff_name_list={{ staff_name_list|safe }};
-                        var barChartData = {
-                          labels  : staff_name_list,
-                          datasets: [
-                            {
-                              label               : 'Leaves',
-                              backgroundColor     : 'rgba(60,141,188,0.9)',
-                              borderColor         : 'rgba(60,141,188,0.8)',
-                              pointRadius          : false,
-                              pointColor          : '#3b8bba',
-                              pointStrokeColor    : 'rgba(60,141,188,1)',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(60,141,188,1)',
-                              data                : attendance_absent_list_staff
-                            },
-                            {
-                              label               : 'Attendance',
-                              backgroundColor     : 'rgba(210, 214, 222, 1)',
-                              borderColor         : 'rgba(210, 214, 222, 1)',
-                              pointRadius         : false,
-                              pointColor          : 'rgba(210, 214, 222, 1)',
-                              pointStrokeColor    : '#c1c7d1',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(220,220,220,1)',
-                              data                : attendance_present_list_staff
-                            },
-                          ]
-                        }
-                        var barChartCanvas = $('#barChart1').get(0).getContext('2d')
-                        var temp0 = barChartData.datasets[0]
-                        var temp1 = barChartData.datasets[1]
-                        barChartData.datasets[0] = temp1
-                        barChartData.datasets[1] = temp0
-
-                        var barChartOptions = {
-                          responsive              : true,
-                          maintainAspectRatio     : false,
-                          datasetFill             : false
-                        }
-
-                        var barChart = new Chart(barChartCanvas, {
-                          type: 'bar',
-                          data: barChartData,
-                          options: barChartOptions
-                        })
-
-                        //Student Leaves vs Attendance
-                        var attendance_present_list_student={{ attendance_present_list_student }};
-                        var attendance_absent_list_student={{ attendance_absent_list_student }};
-                        var student_name_list={{ student_name_list|safe }};
-                        var barChartData2 = {
-                          labels  : student_name_list,
-                          datasets: [
-                            {
-                              label               : 'Leaves',
-                              backgroundColor     : 'rgba(60,141,188,0.9)',
-                              borderColor         : 'rgba(60,141,188,0.8)',
-                              pointRadius          : false,
-                              pointColor          : '#3b8bba',
-                              pointStrokeColor    : 'rgba(60,141,188,1)',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(60,141,188,1)',
-                              data                : attendance_absent_list_student
-                            },
-                            {
-                              label               : 'Attendance',
-                              backgroundColor     : 'rgba(210, 214, 222, 1)',
-                              borderColor         : 'rgba(210, 214, 222, 1)',
-                              pointRadius         : false,
-                              pointColor          : 'rgba(210, 214, 222, 1)',
-                              pointStrokeColor    : '#c1c7d1',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(220,220,220,1)',
-                              data                : attendance_present_list_student
-                            },
-                          ]
-                        }
-                        var barChartCanvas2 = $('#barChart2').get(0).getContext('2d')
-                        var temp02 = barChartData2.datasets[0]
-                        var temp12 = barChartData2.datasets[1]
-                        barChartData2.datasets[0] = temp12
-                        barChartData2.datasets[1] = temp02
-
-                        var barChartOptions2 = {
-                          responsive              : true,
-                          maintainAspectRatio     : false,
-                          datasetFill             : false
-                        }
-
-                        var barChart2 = new Chart(barChartCanvas2, {
-                          type: 'bar',
-                          data: barChartData2,
-                          options: barChartOptions2
-                        })
-
-
-
+        // Feedback Chart
+        var feedbackChartData = {
+            labels: ['Positive', 'Negative'],
+            datasets: [{
+                data: [{{ positive_feedback }}, {{ negative_feedback }}],
+                backgroundColor: ['#00c0ef', '#f56954'],
+            }]
+        };
+        var feedbackChartCanvas = $('#feedbackChart').get(0).getContext('2d');
+        new Chart(feedbackChartCanvas, {
+            type: 'doughnut',
+            data: feedbackChartData,
+            options: { responsive: true, maintainAspectRatio: false }
+        });
     });
 </script>
 {% endblock custom_js %}

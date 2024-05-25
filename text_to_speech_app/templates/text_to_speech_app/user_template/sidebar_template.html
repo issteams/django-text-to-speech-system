@@ -11,9 +11,11 @@
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% static "dist/img/user2-160x160.jpg" %}" class="img-circle elevation-2" alt="User Image">
-        </div>
+        {% if request.user.other.profile_pic %}
+            <img src="{{ request.user.other.profile_pic.url }}" class="img-circle elevation-2" style="height: 80%;" alt="User Image">
+          {% else %}
+            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+          {% endif %}
         <div class="info">
           <a href="" class="d-block">{{ user.username }}</a>
         </div>
@@ -51,10 +53,29 @@
               </p>
             </a>
             <li class="nav-item">
-              <a href="" class="nav-link">
+              {% url 'about' as about %}
+              <a href="{{ about }}" class="nav-link {% if request.path == about %} active {% endif %}">
                 <i class="fa fa-address-book" aria-hidden="true"></i>
                 <p>
                   About
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'feedback' as feedback %}
+              <a href="{{ feedback }}" class="nav-link {% if request.path == feedback %} active {% endif %}">
+                <i class="fab fa-facebook-messenger"></i>
+                <p>
+                  Feedback
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'profile' as profile %}
+              <a href="{{ profile }}" class="nav-link {% if request.path == prfile %} active {% endif %}">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <p>
+                  Profile
                 </p>
               </a>
             </li>

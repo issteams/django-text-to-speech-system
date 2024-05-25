@@ -1,0 +1,60 @@
+{% extends 'text_to_speech_app/admin_templates/base_template.html' %}
+{% load custom_filters %}
+{% block page_title %}
+Uploaded PDFs
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">PDF Details</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>PDF ID</th>
+                      <th>User ID</th>
+                      <th>File</th>
+                      <th>Uploaded At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for pdf in pdfs %}
+                    <tr>
+                      <td>{{ pdf.id }}</td>
+                      <td>{{ pdf.user.id }}</td>
+                      <td>{{ pdf.file|basename }}</td>
+                      <td>{{ pdf.uploaded_at }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

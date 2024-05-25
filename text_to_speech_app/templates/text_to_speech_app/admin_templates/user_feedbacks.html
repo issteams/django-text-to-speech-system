@@ -1,0 +1,105 @@
+{% extends 'text_to_speech_app/admin_templates/base_template.html' %}
+{% load custom_filters %}
+{% block page_title %}
+User Feedbacks
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Feedback Details</h3>
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>User</th>
+                      <th>Message</th>
+                      <th>Sentiment</th>
+                      <th>Reply</th>
+                      <th>Created At</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for user_feedback in user_feedbacks %}
+                    <tr>
+                      <td>{{ user_feedback.id }}</td>
+                      <td>{{ user_feedback.user.username }}</td>
+                      <td>{{ user_feedback.message }}</td>
+                      <td>{{ user_feedback.sentiment }}</td>
+                      <td>{{ user_feedback.reply }}</td>
+                      <td>{{ user_feedback.created_at }}</td>
+                      <td>
+                        {% if user_feedback.replied %}
+                          <button type="button" class="btn btn-success" disabled>Replied</button>
+                        {% else %}
+                          <button type="button" class="btn btn-success reply-btn" data-id="{{ user_feedback.id }}">Reply</button>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="replyModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="replyModalLabel">Reply to Feedback</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="replyForm" method="post" action="{% url 'reply_feedback' %}">
+              {% csrf_token %}
+              <input type="hidden" name="feedback_id" id="feedback_id">
+              <div class="form-group">
+                <label for="reply_message">Message</label>
+                <textarea class="form-control" id="reply_message" name="reply_message" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Send Reply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function() {
+      $('.reply-btn').on('click', function() {
+        var feedbackId = $(this).data('id');
+        $('#feedback_id').val(feedbackId);
+        $('#replyModal').modal('show');
+      });
+    });
+</script>
+{% endblock custom_js %}

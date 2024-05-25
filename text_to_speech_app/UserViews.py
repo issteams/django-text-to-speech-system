@@ -3,9 +3,10 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from text_to_speech_app.text_to_speech import *
-from .forms import PDFUploadForm
-from .models import PDF, Audio
+from .forms import PDFUploadForm, FeedbackForm, UserProfileForm
+from .models import PDF, Audio, CustomUser, Other, Feedback
 import os
 
 
@@ -116,3 +117,84 @@ def reconvert_pdf(request, pdf_id):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     return JsonResponse({'status': 'error', 'message': 'Invalid request method or not an AJAX request.'}, status=400)
+
+def about(request):
+    return render(request, "text_to_speech_app/user_template/about.html")
+
+def feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.save()
+            messages.success(request, 'Thank you for your feedback!')
+            return redirect('feedback')
+    else:
+        form = FeedbackForm()
+        feedbacks = Feedback.objects.filter(user=request.user).order_by('created_at')
+    return render(request, 'text_to_speech_app/user_template/feedback.html', {'form': form, "feedbacks": feedbacks})
+
+def profile(request):
+    user = Other.objects.get(admin=request.user.id)
+    form = UserProfileForm()
+    form.fields['email'].initial=user.admin.email
+    form.fields['first_name'].initial=user.admin.first_name
+    form.fields['last_name'].initial=user.admin.last_name
+    form.fields['username'].initial=user.admin.username
+    return render(request, "text_to_speech_app/user_template/profile.html", {
+        "form": form,
+    })
+
+def profile_save(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            if request.FILES.get('profile_pic',False):
+                profile_pic = request.FILES['profile_pic']
+            else:
+                profile_pic = None
+            try:
+                user = CustomUser.objects.get(id=request.user.id)
+                user.username = username
+                user.first_name = first_name
+                user.last_name = last_name
+                user.email = email
+                if password != None and password != "":
+                    user.set_password(password)
+                user.save()
+
+                other_model = Other.objects.get(admin=user)
+                if profile_pic != None:
+                    other_model.profile_pic = profile_pic
+                other_model.save()
+                messages.success(request,"Successfully Updated Profile")
+                return redirect("profile")
+            except:
+                messages.error(request,"Failed to Update Profile")
+                return redirect("profile")
+        else:
+            form= UserProfileForm(request.POST)
+            return render(request, "text_to_speech_app/user_template/profile.html", {
+                "form": form,
+            })
+    else:
+        return HttpResponse("Method not allowed")
+
+def search_pdfs(request):
+    query = request.GET.get('q', '')
+    pdfs = PDF.objects.filter(Q(file__icontains=query))
+    results = [{'id': pdf.id, 'file': pdf.file, 'basename': os.path.basename(pdf.file.name)} for pdf in pdfs]
+    return JsonResponse({'pdfs': results})
+
+def search_audios(request):
+    query = request.GET.get('q', '')
+    audios = Audio.objects.filter(Q(file__icontains=query))
+    results = [{'id': audio.id, 'file': audio.file.url, 'basename': os.path.basename(audio.file.name)} for audio in audios]
+    return JsonResponse({'audios': results})

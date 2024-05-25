@@ -16,6 +16,11 @@ urlpatterns = [
     path('edit_user/<str:id>', AdminViews.edit_user, name='edit_user'),
     path('edit_user_save/', AdminViews.edit_user_save, name='edit_user_save'),
     path('delete_user/<str:user_id>', AdminViews.delete_user, name='delete_user'),
+    path('active_users/', AdminViews.active_users, name='active_users'),
+    path('total_uploaded_pdfs/', AdminViews.total_uploaded_pdfs, name='total_uploaded_pdfs'),
+    path('total_converted_audios/', AdminViews.total_converted_audios, name='total_converted_audios'),
+    path('user_feedbacks/', AdminViews.feedbacks, name='user_feedbacks'),
+    path('reply_feedback/', AdminViews.reply_feedback, name='reply_feedback'),
 
 
     # User Views
@@ -26,8 +31,12 @@ urlpatterns = [
     path('delete_audio/<str:audio_id>', UserViews.delete_audio, name='delete_audio'),
     path('delete_pdf/<str:pdf_id>', UserViews.delete_pdf, name='delete_pdf'),
     path('reconvert_pdf/<str:pdf_id>', UserViews.reconvert_pdf, name='reconvert_pdf'),
-
-    
+    path('about/', UserViews.about, name='about'),
+    path('feedback/', UserViews.feedback, name='feedback'),
+    path('profile/', UserViews.profile, name='profile'),
+    path('profile_save/', UserViews.profile_save, name='profile_save'),
+    path('search_pdfs/', UserViews.search_pdfs, name='search_pdfs'),
+    path('search_audios/', UserViews.search_audios, name='search_audios'),
 
 
     path('logout', views.user_logout, name='logout'),

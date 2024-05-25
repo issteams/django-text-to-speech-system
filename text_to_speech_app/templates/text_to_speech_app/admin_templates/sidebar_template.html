@@ -27,7 +27,7 @@
           <li class="nav-item">
             {% url 'admin_home' as admin_home %}
             <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="fa fa-home" aria-hidden="true"></i>
               <p>
                 Home
               </p>
@@ -36,7 +36,7 @@
           <li class="nav-item">
             {% url 'add_user' as add_user %}
             <a href="{{ add_user }}" class="nav-link {% if request.path == add_user %} active {% endif %}">
-              <i class="nav-icon fas fa-th"></i>
+               <i class="fa fa-user" aria-hidden="true"></i>
               <p>
                Add User
               </p>
@@ -45,19 +45,47 @@
           <li class="nav-item">
             {% url 'manage_users' as manage_users %}
             <a href="{{ manage_users }}" class="nav-link {% if request.path == manage_users %} active {% endif %}">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="fa fa-user-circle" aria-hidden="true"></i>
               <p>
                 Mange Users
               </p>
             </a>
+          </li>
+          <li class="nav-item">
+            {% url 'active_users' as active_users %}
+          <a href="{{ active_users }}" class="nav-link {% if request.path == active_users %} active {% endif %}">
+            <i class="fa fa-user" aria-hidden="true"></i>
+            <p>
+              Active Users
+            </p>
+          </a>
+        </li>
+          <li class="nav-item">
+            {% url 'total_uploaded_pdfs' as total_uploaded_pdfs %}
+            <a href="{{ total_uploaded_pdfs }}" class="nav-link {% if request.path == total_uploaded_pdfs %} active {% endif %}">
+              <i class="fa fa-file" aria-hidden="true"></i>
+              <p>
+                Uploaded PDFs
+              </p>
+            </a>
+          </li>
             <li class="nav-item">
-              <a href="" class="nav-link">
-                <i class="nav-icon fas fa-th"></i>
+              {% url 'total_converted_audios' as total_converted_audios %}
+              <a href="{{ total_converted_audios }}" class="nav-link {% if request.path == total_converted_audios %} active {% endif %}">
+                <i class="fa fa-audio-description" aria-hidden="true"></i>
                 <p>
                   Converted Audios
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              {% url 'user_feedbacks' as user_feedbacks %}
+            <a href="{{ user_feedbacks }}" class="nav-link {% if request.path == user_feedbacks %} active {% endif %}">
+              <i class="fab fa-facebook-messenger"></i>
+              <p>
+                Feedbacks
+              </p>
+            </a>
           </li>
         </ul>
       </nav>

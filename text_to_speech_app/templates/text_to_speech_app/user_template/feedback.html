@@ -1,0 +1,76 @@
+{% extends 'text_to_speech_app/user_template/base_template.html' %}
+{% block page_title %}Feedback{% endblock page_title %}
+{% block main_content %}
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Feedback</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            {% if messages %}
+              {% for message in messages %}
+                {% if message.tags == 'error' %}
+                  <div class="alert alert-danger">{{ message }}</div>
+                {% elif message.tags == 'success' %}
+                  <div class="alert alert-success">{{ message }}</div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'feedback' %}">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Feedback Details</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Message</th>
+                      <th>Reply</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for feedback in feedbacks %}
+                    <tr>
+                      <td>{{ feedback.message }}</td>
+                      {% if feedback.relpied == False %}
+                        <td>No Reply yet</td>
+                      {% else %}
+                        <td>{{ feedback.reply }}</td>
+                      {% endif %}
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
