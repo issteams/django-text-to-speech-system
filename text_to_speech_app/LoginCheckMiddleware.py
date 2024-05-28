@@ -15,7 +15,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                     pass
                 elif modulename == "text_to_speech_app.views" or modulename == "django.views.static":
                     pass
-                elif modulename == "django.contrib.auth.views" or modulename =="django.contrib.admin.sites":
+                elif modulename == "django.contrib.auth.views" or modulename =="django.contrib.admin.sites" or modulename == "django.contrib.admin.options":
                     pass
                 else:
                     return HttpResponseRedirect(reverse("admin_home"))

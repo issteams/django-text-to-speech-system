@@ -166,7 +166,6 @@ def reply_feedback(request):
         feedback_id = form.cleaned_data['feedback_id']
         reply_message = form.cleaned_data['reply_message']
         feedback = get_object_or_404(Feedback, id=feedback_id)
-        # Assuming UserFeedback model has a 'reply' field
         feedback.reply = reply_message
         feedback.replied = True  # Mark feedback as replied
         feedback.save()
